@@ -1,0 +1,49 @@
+{
+	"info": {
+		"_postman_id": "31f4d846-3b19-423b-b841-3c87ba83c515",
+		"name": "Indorinama",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28441622",
+		"_collection_link": "https://warped-space-532852.postman.co/workspace/frontend-apps~45e8d280-16ab-4fc4-b477-3d7cbfd65951/collection/28441622-31f4d846-3b19-423b-b841-3c87ba83c515?action=share&source=collection_link&creator=28441622"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"dummy name \",\r\n    \"Email\": \"demo@gmail.com\",\r\n    \"password\": \"shreyanshi@123\",\r\n    \"PhoneNumber\": \"689898989\",\r\n    \"City\": \"Indore\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/api/users/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

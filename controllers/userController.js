@@ -56,28 +56,21 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new Error("User not found");
     }
 
-    console.log("Hashed Password Length:", user.password.length);
-    console.log("Plaintext Password Length:", password.length);
-
-
-    console.log(user.password);
-    console.log(password)
-    // Compare passwords
-    const passwordMatch = await bcrypt.compare(password, user.password);
-
-    if (passwordMatch) {
-        const accessToken = jwt.sign({
+    // compare password
+    if (user && (await bcrypt.compare(password, user.password))) {
+        const accesstoken = jwt.sign({
             user: {
                 username: user.username,
                 Email: user.Email,
                 id: user.id
             }
-        }, process.env.ACCES_TOKEN_SECRET, { expiresIn: "1hr" });
-
-        res.status(200).json({ accessToken });
-    } else {
-        res.status(401);
-        throw new Error("Email/Password not matched");
+        }, process.env.ACCESS_TOKEN_SECRET)
+        { expireIN: "1hr" }
+        res.status(200).json({ accesstoken })
+    }
+    else {
+        res.status(401)
+        throw new Error("email/password not matched")
     }
 });
 
@@ -86,4 +79,52 @@ const currentUser = asyncHandler(async (req, res) => {
     res.json({ message: "Current user info" });
 });
 
-module.exports = { registerUser, loginUser, currentUser };
+const CreateProfile = asyncHandler(async (req, res) => {
+    const { FullName, Gender, Address } = req.body;
+    const user = req.user;
+    const userId = user.id;
+    await User.findByIdAndUpdate(userId, {
+        $set: {
+            FullName,
+            Gender,
+            Address
+        }
+    });
+    res.status(200).json({ message: "Profile completed successfully" });
+});
+
+const EditProfile = asyncHandler(async (req, res) => {
+    const { FullName, Gender, Email, PhoneNumber, City, Address } = req.body;
+    const user = req.user;
+    const userId = user.id;
+    await User.findByIdAndUpdate(userId, {
+        $set: {
+            FullName,
+            Gender,
+            Email,
+            PhoneNumber,
+            City,
+            Address
+        }
+    });
+    res.status(200).json({ message: "Profile updated successfully" });
+});
+
+const updatePassword = asyncHandler(async (req, res) => {
+    const { currentPassword,previousPassword } = req.body;
+    const user = req.user;
+    const userId = user.id;
+
+    if (user.id && (await bcrypt.compare(previousPassword, user.password))) {
+        // Hash password
+        const hashedPassword = await bcrypt.hash(currentPassword,10);
+        await User.findByIdAndUpdate(userId, {
+            $set: {
+                password: hashedPassword,
+            }
+        });
+        res.status(200).json({ message: "Password updated successfully" });
+    }
+});
+
+module.exports = { registerUser, loginUser, currentUser, CreateProfile, EditProfile,updatePassword };
